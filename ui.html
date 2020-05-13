@@ -1,0 +1,23 @@
+<link rel="stylesheet" href="https://static.figma.com/api/figma-extension-api-0.0.1.css">
+<img id="img" style="display:block;margin-left:auto;margin-right:auto">
+<input id="saveAs" type="text" placeholder="Filename" style="position:absolute;left:5px;bottom:5px">
+<a id="dl"><button style="position:absolute;right:5px;bottom:5px">Save Zip</button></a>
+
+<script>
+  const imgId = document.getElementById("img")
+  const dlId = document.getElementById("dl")
+  document.queryselector("a").onclick = () => {
+    dlId.setAttribute("download", document.getElementById("saveAs").value + ".webp")
+  }
+  
+  onmessage = (event) => {
+    imgId.src = "data:image/png;base64," + btoa(String.fromCharCode.apply(null, event.data.pluginMessage))
+    
+    const canvas = document.createElement("canvas")
+    const ctx = canvas.getContext("2d")
+    canvas.width = imgId.width
+    canvas.height = imgId.height
+    ctx.drawImage(imgId, 0, 0)
+    dlId.setAttribute("href", canvas.toDataURL("image/webp", 1.0))
+  }
+</script>
