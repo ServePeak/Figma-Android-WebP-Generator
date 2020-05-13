@@ -2,5 +2,6 @@
   "name": "Android WebP Generator",
   "api": "1.0.0",
   "main": "code.js",
-  "ui": "ui.html"
+  "ui": "ui.html",
+  "id": "842538740516209932"
 }
