@@ -20,9 +20,11 @@ async function saveAsWebp(node) {
   if (node.type == 'FRAME') {
     const pngArray = []
     pngArray.push(await node.exportAsync(DEFAULT_EXPORT))
-    for (let i = 1; i < 6; i++) {
-      pngArray.push(await node.exportAsync(exportSize(i))
-    }
+    pngArray.push(await node.exportAsync(exportSize(1))
+    pngArray.push(await node.exportAsync(exportSize(1.5))
+    pngArray.push(await node.exportAsync(exportSize(2))
+    pngArray.push(await node.exportAsync(exportSize(3))
+    pngArray.push(await node.exportAsync(exportSize(4))
     figma.ui.postMessage(pngArray)
   }
 }
