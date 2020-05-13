@@ -37,6 +37,8 @@
   const btnId = document.getElementById("btn")
 
   onmessage = (event) => {
+    
+    console.log("test")
     imgArray = event.data.pluginMessage
     imgId.src = "data:image/png;base64," + btoa(String.fromCharCode.apply(null, imgArray[0]))
 
