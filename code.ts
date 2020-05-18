@@ -17,17 +17,15 @@ function exportSize(size) {
 }
 
 async function saveAsWebp(node) {
-  if (node.type == 'FRAME') {
-    const pngArray = []
-    pngArray.push(await node.exportAsync(DEFAULT_EXPORT))
-    pngArray.push(await node.exportAsync(exportSize(1)))
-    pngArray.push(await node.exportAsync(exportSize(1.5)))
-    pngArray.push(await node.exportAsync(exportSize(2)))
-    pngArray.push(await node.exportAsync(exportSize(3)))
-    pngArray.push(await node.exportAsync(exportSize(4)))
+  const pngArray = []
+  pngArray.push(await node.exportAsync(DEFAULT_EXPORT))
+  pngArray.push(await node.exportAsync(exportSize(1)))
+  pngArray.push(await node.exportAsync(exportSize(1.5)))
+  pngArray.push(await node.exportAsync(exportSize(2)))
+  pngArray.push(await node.exportAsync(exportSize(3)))
+  pngArray.push(await node.exportAsync(exportSize(4)))
 
-    figma.ui.postMessage(pngArray)
-  }
+  figma.ui.postMessage(pngArray)
 }
 
 Promise.all(figma.currentPage.selection.map(selected => saveAsWebp(selected)))
