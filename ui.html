@@ -25,7 +25,7 @@
 <link rel="stylesheet" href="https://static.figma.com/api/figma-extension-api-0.0.1.css">
 <img id="img">
 <input id="saveAs" type="text" placeholder="Filename">
-<a id="dl" download><button>Save Zip</button></a>
+<button id="dl">Save Zip</button>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.3.0/jszip.min.js"></script>
 <script>
@@ -35,52 +35,56 @@
     const imgId = document.getElementById("img")
     const dlId = document.getElementById("dl")
     const imgArray = event.data.pluginMessage
+    const webpArray = []
 
     for (let i = 1; i < imgArray.length; i++) {
-      imgId.src = "data:image/png;base64," + btoa(String.fromCharCode.apply(null, imgArray[i]))
-      const canvas = document.createElement("canvas")
-      const ctx = canvas.getContext("2d")
-      canvas.width = imgId.width
-      canvas.height = imgId.height
-      ctx.drawImage(imgId, 0, 0)
-      imgArray[i] = canvas.toDataURL("image/webp", 1.0)
+      const tempImg = new Image()
+      tempImg.src = "data:image/png;base64," + btoa(String.fromCharCode.apply(null, imgArray[i]))
+      tempImg.onload = () => {
+        const canvas = document.createElement("canvas")
+        const ctx = canvas.getContext("2d")
+        canvas.width = tempImg.width
+        canvas.height = tempImg.height
+        ctx.drawImage(tempImg, 0, 0)
+        const b64webp = canvas.toDataURL("image/webp", 1.0).split(",")[1]
+
+        if (b64webp == "") {
+          alert("Generating webp failed, please rerun the plugin.")
+        } else {
+          webpArray.push(b64webp)
+        }
+      }
     }
+
     imgId.src = "data:image/png;base64," + btoa(String.fromCharCode.apply(null, imgArray[0]))
-    
-    const saveAs = document.getElementById("saveAs").value
 
-    for(let i = 1; i < imgArray.length; i++) {
-      let folderName = "drawable-"
-      switch(i) {
-        case 1:
-          folderName += "mdpi"
-          break
-        case 2:
-          folderName += "hdpi"
-          break
-        case 3:
-          folderName += "xhdpi"
-          break
-        case 4:
-          folderName += "xxhdpi"
-          break
-        case 5:
-          folderName += "xxxhdpi"
-          break
+    dlId.onclick = () => {
+      const saveAs = document.getElementById("saveAs").value
+      for (let i = 0; i < webpArray.length; i++) {
+        let folderName = "drawable-"
+        switch(i) {
+          case 0:
+            folderName += "mdpi"
+            break
+          case 1:
+            folderName += "hdpi"
+            break
+          case 2:
+            folderName += "xhdpi"
+            break
+          case 3:
+            folderName += "xxhdpi"
+            break
+          case 4:
+            folderName += "xxxhdpi"
+            break
+        }
+        zip.file(`${folderName}/${saveAs}.webp`, webpArray[i], {base64: true})
       }
 
-      const base64 = imgArray[i].split(",")[1]
-      
-      if (base64 == "") {
-        alert("Generating webp failed, please rerun the plugin.")
-        break
-      }
-
-      zip.file(${folderName}/${saveAs}.webp, base64, {base64: true})
+      zip.generateAsync({type:"base64"}).then((b64) => {
+        location.href="data:application/zip;base64," + b64
+      })
     }
-
-    zip.generateAsync({type:"base64"}).then((base64) => {
-      dlId.href="data:application/zip;base64," + base64
-    })
   }
-</script>
+  </script>
